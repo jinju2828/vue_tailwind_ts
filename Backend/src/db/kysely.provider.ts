@@ -1,6 +1,7 @@
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
 export interface Database {
