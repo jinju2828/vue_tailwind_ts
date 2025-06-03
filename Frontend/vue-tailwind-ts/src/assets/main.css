@@ -1,1 +1,19 @@
-@import 'tailwindcss";
+@import "tailwindcss";
+
+/* === 여기에 Tailwind 임포트 위가 아니라 아래에 전역 커스텀 CSS 작성해야 함 === */
+
+/* Chrome, Edge, Safari */
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* IE 10+ */
+body {
+  -ms-overflow-style: none;
+}
