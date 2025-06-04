@@ -1,93 +1,92 @@
 <template>
   <div class="todo-page">
-    <!-- 배경 -->
-    <div class="parallax-bg">
-      <div class="layer layer1"></div>
-      <div class="layer layer2"></div>
-      <div class="layer layer3"></div>
+    <!-- 움직이는 배경 레이어 -->
+    <div class="background">
+      <div
+        class="blob blob1"
+        :style="{
+          transform: `translateY(${scrollY * 0.2}px)`,
+          background: `radial-gradient(circle, rgba(139,92,246,${0.6 + scrollY * 0.0005}) , transparent 70%)`
+        }"
+      ></div>
+      <div
+        class="blob blob2"
+        :style="{
+          transform: `translateY(${scrollY * 0.5}px)`,
+          background: `radial-gradient(circle, rgba(236,72,153,${0.5 + scrollY * 0.0005}) , transparent 70%)`
+        }"
+      ></div>
+      <div
+        class="blob blob3"
+        :style="{
+          transform: `translateY(${scrollY * 0.8}px)`,
+          background: `radial-gradient(circle, rgba(34,211,238,${0.5 + scrollY * 0.0005}) , transparent 70%)`
+        }"
+      ></div>
     </div>
 
-    <!-- 투두 리스트 (항상 화면 고정) -->
+    <!-- 중앙 고정된 ToDo 앱 -->
     <div class="content">
-      <h1 class="text-2xl font-bold mb-4">My Todos</h1>
       <TodoList />
     </div>
-
-    <!-- 가짜 스크롤 영역 -->
-    <div class="scroll-space"></div>
   </div>
 </template>
 
-<script setup>
-import { onMounted, onBeforeUnmount } from "vue"
-import TodoList from "../components/TodoList.vue"
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import TodoList from "@/components/TodoList.vue";
 
-const handleScroll = () => {
-  const scrollY = window.scrollY
-  document.querySelector(".layer1").style.transform = `translateY(${scrollY * 0.2}px)`
-  document.querySelector(".layer2").style.transform = `translateY(${scrollY * 0.5}px)`
-  document.querySelector(".layer3").style.transform = `translateY(${scrollY * 0.8}px)`
+const scrollY = ref(0);
+
+function handleScroll() {
+  scrollY.value = window.scrollY;
 }
 
-onMounted(() => {
-  window.addEventListener("scroll", handleScroll)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener("scroll", handleScroll)
-})
+onMounted(() => window.addEventListener("scroll", handleScroll));
+onBeforeUnmount(() => window.removeEventListener("scroll", handleScroll));
 </script>
 
 <style scoped>
-::-webkit-scrollbar {
-  display: none;
-}
-html {
-  scrollbar-width: none;
-}
-body {
-  -ms-overflow-style: none;
-}
-
 .todo-page {
   position: relative;
+  width: 100%;
+  height: 200vh; /* 충분히 스크롤 가능 */
   overflow-x: hidden;
 }
 
-.parallax-bg {
-  position: fixed;
+/* ✨ 애니메이션 배경 */
+.background {
+  position: fixed; /* 화면 고정 */
   inset: 0;
-  z-index: -1;
+  overflow: hidden;
+  z-index: 0;
 }
 
-.layer {
+.blob {
   position: absolute;
-  width: 100%;
-  height: 200%;
-  will-change: transform;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(150px);
   opacity: 0.6;
+  transition: background 0.2s linear;
 }
 
-.layer1 {
-  background: linear-gradient(120deg, #6dd5ed, #2193b0);
-}
-.layer2 {
-  background: linear-gradient(120deg, #ffecd2, #fcb69f);
-}
-.layer3 {
-  background: linear-gradient(120deg, #c9ffbf, #ffafbd);
-}
+/* 초기 위치 */
+.blob1 { top: -20%; left: -15%; }
+.blob2 { bottom: -25%; right: -10%; }
+.blob3 { top: 30%; right: 20%; }
 
+/* 투두 리스트 중앙 고정 */
 .content {
-  position: fixed; /* ✅ 화면 중앙 고정 */
+  position: fixed;
+  z-index: 1;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 10;
-  text-align: center;
-}
-
-.scroll-space {
-  height: 200vh; /* ✅ 스크롤 공간만 만들어줌 */
+  width: 100%;
+  max-width: 400px;
+  padding: 1rem;
+  pointer-events: auto;
 }
 </style>
