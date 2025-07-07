@@ -1,29 +1,30 @@
 <template>
-  <div>
+  <div class="flex gap-2 mt-4">
     <input
       v-model="newTodo"
-      @focus="emit('focus')"
-      placeholder="Add a todo"
-      class="border p-2 rounded"
+      @keyup.enter="handleAddTodo"
+      placeholder="Input new todo"
+      class="border p-2 flex-1 rounded"
     />
-    <button @click="handleAdd" class="ml-2 p-2 bg-blue-500 text-white rounded">Add</button>
-    <button @click="emit('cancel')" class="ml-2 p-2 bg-gray-300 rounded">Cancel</button>
+    <button
+      @click="handleAddTodo"
+      class="bg-blue-500 text-white px-4 py-2 rounded"
+    >
+      Add
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
+import { useTodoStore } from "@/stores/todoStore";
 
-const newTodo = ref('');
-const emit = defineEmits<{
-  (e: 'add', todo: string): void;
-  (e: 'focus'): void;
-  (e: 'cancel'): void;
-}>();
+const store = useTodoStore();
+const newTodo = ref("");
 
-function handleAdd() {
-  if (!newTodo.value.trim()) return;
-  emit('add', newTodo.value.trim());
-  newTodo.value = '';
+function handleAddTodo() {
+  if (newTodo.value.trim() === "") return;
+  store.addTodo(newTodo.value);
+  newTodo.value = "";
 }
 </script>
