@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-md mx-auto bg-white shadow-xl rounded-2xl p-6 space-y-6">
-    <!-- Todo 입력 -->
+    <!-- 할 일 입력 -->
     <div class="flex gap-2">
       <input
         v-model="newTodo"
@@ -22,7 +22,7 @@
       <button
         v-for="type in ['all', 'active', 'completed']"
         :key="type"
-        @click="setFilter(type)"
+        @click="setFilter(type as FilterType)"
         class="flex-1 text-center py-2 relative"
       >
         <span
@@ -37,7 +37,10 @@
       <!-- underline 애니메이션 -->
       <span
         class="absolute bottom-0 left-0 h-0.5 bg-blue-600 transition-all duration-300"
-        :style="{ width: tabWidth, transform: `translateX(${tabTranslate})` }"
+        :style="{
+          width: tabWidth,
+          transform: `translateX(${tabTranslate})`
+        }"
       />
     </div>
 
@@ -46,14 +49,16 @@
       v-model="filteredTodos"
       item-key="id"
       class="space-y-3"
-      handle=".handle"
-      animation="200"
+      handle=".drag-handle"
     >
       <template #item="{ element: todo }">
         <li
           class="flex justify-between items-center bg-gray-50 rounded-lg px-3 py-2 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
         >
-          <label class="flex items-center gap-3 flex-1 cursor-pointer handle">
+          <label class="flex items-center gap-3 flex-1 cursor-pointer">
+            <!-- 드래그 핸들 -->
+            <span class="drag-handle cursor-grab text-gray-400 hover:text-gray-600">☰</span>
+
             <!-- 커스텀 체크박스 -->
             <input type="checkbox" v-model="todo.done" class="peer hidden" />
             <span
@@ -100,50 +105,50 @@
 
     <!-- Empty state -->
     <div v-if="!filteredTodos.length" class="text-center text-gray-400 py-6">
-      <p class="mb-2">😴 There is no ToDo</p>
+      <p class="mb-2">😴 There is no ToDo </p>
       <p class="text-sm">Add any ToDo you want to finish today!</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useTodoStore } from '@/stores/todoStore';
-import draggable from 'vuedraggable';
+import { ref, computed } from "vue";
+import { useTodoStore } from "@/stores/todoStore";
+import draggable from "vuedraggable";
+
+type FilterType = "all" | "active" | "completed";
 
 const store = useTodoStore();
-const newTodo = ref('');
-const filter = ref<'all' | 'active' | 'completed'>('all');
+const newTodo = ref("");
+const filter = ref<FilterType>("all");
 
 function addTodo() {
   if (newTodo.value.trim()) {
     store.addTodo(newTodo.value);
-    newTodo.value = '';
+    newTodo.value = "";
   }
 }
-
-function setFilter(type: 'all' | 'active' | 'completed') {
+function setFilter(type: FilterType) {
   filter.value = type;
 }
 
-const filteredTodos = computed(() => {
-  if (filter.value === 'active') return store.activeTodos;
-  if (filter.value === 'completed') return store.completedTodos;
-  return store.allTodos;
+const filteredTodos = computed({
+  get: () => {
+    if (filter.value === "active") return store.activeTodos;
+    if (filter.value === "completed") return store.completedTodos;
+    return store.allTodos;
+  },
+  set: (val) => {
+    // 순서 업데이트
+    store.todos = val;
+  },
 });
 
 // underline 애니메이션용
-const tabWidth = '33.33%';
+const tabWidth = "33.33%";
 const tabTranslate = computed(() => {
-  if (filter.value === 'all') return '0%';
-  if (filter.value === 'active') return '100%';
-  return '200%';
+  if (filter.value === "all") return "0%";
+  if (filter.value === "active") return "100%";
+  return "200%";
 });
 </script>
-
-<style scoped>
-/* 드래그할 때 손잡이 포인터 표시 */
-.handle {
-  cursor: grab;
-}
-</style>
