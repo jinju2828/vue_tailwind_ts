@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-interface Todo {
+export interface Todo {
   id: number;
   text: string;
   done: boolean;
@@ -13,24 +13,37 @@ export const useTodoStore = defineStore("todo", () => {
   const todos = ref<Todo[]>([]);
 
   function addTodo(text: string) {
-    if (text.trim() !== "") {
-      todos.value.push({ id: nextId++, text, done: false });
-    }
+    if (text.trim() === "") return;
+    todos.value.push({ id: nextId++, text, done: false });
   }
 
   function removeTodo(id: number) {
-    todos.value = todos.value.filter((todo) => todo.id !== id);
+    const index = todos.value.findIndex(t => t.id === id);
+    if (index !== -1) todos.value.splice(index, 1);
   }
 
   function toggleTodo(id: number) {
-    const todo = todos.value.find((t) => t.id === id);
+    const todo = todos.value.find(t => t.id === id);
     if (todo) todo.done = !todo.done;
   }
 
-  // getters
   const allTodos = computed(() => todos.value);
-  const activeTodos = computed(() => todos.value.filter((t) => !t.done));
-  const completedTodos = computed(() => todos.value.filter((t) => t.done));
+  const activeTodos = computed(() => todos.value.filter(t => !t.done));
+  const completedTodos = computed(() => todos.value.filter(t => t.done));
 
-  return { todos, addTodo, removeTodo, toggleTodo, allTodos, activeTodos, completedTodos };
+  // 순서 변경
+  function setTodos(newTodos: Todo[]) {
+    todos.value = newTodos;
+  }
+
+  return {
+    todos,
+    allTodos,
+    activeTodos,
+    completedTodos,
+    addTodo,
+    removeTodo,
+    toggleTodo,
+    setTodos
+  };
 });
