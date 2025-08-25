@@ -8,33 +8,34 @@
     </div>
 
     <ul class="space-y-2">
-  <li
-    v-for="todo in filteredTodos"
-    :key="todo.id"
-    class="flex justify-between items-center border-b pb-2"
-  >
-    <label class="flex items-center gap-2 flex-1">
-      <input type="checkbox" v-model="todo.done" />
-      <span :class="{ 'line-through text-gray-400': todo.done }">
-        {{ todo.text }}
-      </span>
-    </label>
+      <li
+        v-for="todo in filteredTodos"
+        :key="todo.id"
+        class="flex justify-between items-center border-b pb-2"
+      >
+        <label class="flex items-center gap-2 flex-1">
+          <input type="checkbox" v-model="todo.done" />
+          <span :class="{ 'line-through text-gray-400': todo.done }">
+            {{ todo.text }}
+          </span>
+        </label>
 
-    <button
-      @click="store.removeTodo(todo.id)"
-      class="ml-4 text-red-500 hover:underline"
-    >
-      delete
-    </button>
-  </li>
-</ul>
-
+        <!-- 🗑️ 아이콘 버튼 -->
+        <button
+          @click="store.removeTodo(todo.id)"
+          class="ml-4 text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-gray-100"
+        >
+          <TrashIcon class="w-5 h-5" />
+        </button>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useTodoStore } from "@/stores/todoStore";
+import { TrashIcon } from "@heroicons/vue/24/solid"; // ✅ Heroicons import
 
 const store = useTodoStore();
 const filter = ref<"all" | "active" | "completed">("all");
