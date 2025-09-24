@@ -1,0 +1,27 @@
+vue-tailwind-ts-app/
+├─ frontend/                 # Vue + TS + Tailwind 앱
+│  ├─ public/
+│  ├─ src/
+│  │  ├─ assets/
+│  │  ├─ components/
+│  │  ├─ views/
+│  │  ├─ router/
+│  │  ├─ store/              # Vuex / Pinia 사용 시
+│  │  └─ main.ts
+│  ├─ package.json
+│  ├─ tsconfig.json
+│  └─ vite.config.ts
+│
+├─ backend/                  # Node/Express + TS 서버
+│  ├─ src/
+│  │  ├─ controllers/
+│  │  ├─ routes/
+│  │  ├─ models/             # DB 모델 (Prisma, TypeORM 등)
+│  │  └─ index.ts
+│  ├─ package.json
+│  ├─ tsconfig.json
+│  └─ .env                   # DB 접속 정보 등
+│
+├─ docker/                   # (선택) Dockerfile, docker-compose.yml
+├─ README.md
+└─ .gitignore

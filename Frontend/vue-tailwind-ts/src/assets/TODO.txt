@@ -1,0 +1,31 @@
+Vue3 TodoList + persistence + 완료 체크 구현 계획
+
+상태 관리 (Pinia 또는 Composition API)
+
+todos: { id, text, completed }[]
+
+상태가 바뀌면 LocalStorage에 자동 저장 (watch 활용)
+
+TodoInput
+
+입력, 포커스, 취소 이벤트 (emit)
+
+부모에서 add 처리
+
+TodoItem
+
+삭제, 완료 체크박스
+
+emit으로 부모에 이벤트 전달
+
+TodoList
+
+todos 리스트 렌더링
+
+필터 (전체, 완료, 미완료) 기능
+
+API 연동
+
+나중에 Express 백엔드로 fetch
+
+React에서 useEffect와 비슷하게 onMounted()에서 fetch

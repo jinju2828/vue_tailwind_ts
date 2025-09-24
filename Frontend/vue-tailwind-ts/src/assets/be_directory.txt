@@ -1,0 +1,9 @@
+backend/
+├─ src/
+│  ├─ controllers/          # 비즈니스 로직 (todoController.ts)
+│  ├─ routes/               # API 라우트 (todoRoutes.ts)
+│  ├─ models/               # DB 모델 (Prisma / TypeORM)
+│  └─ index.ts              # 서버 시작
+├─ package.json
+├─ tsconfig.json
+└─ .env                     # DB 접속 정보
