@@ -1,45 +1,40 @@
 <template>
-  <div>
+  <div class="max-w-md mx-auto mt-10">
     <TodoInput
       @add="addTodo"
-      @focus="onFocusInput"
-      @cancel="onCancelInput"
-      :is-focused="inputFocused"
+      @focus="inputFocused = true"
+      @cancel="inputFocused = false"
     />
     <ul>
-      <TodoItem 
-        v-for="t in todos" 
-        :key="t" 
-        :todo="t" 
-        @remove="removeTodo" 
+      <TodoItem
+        v-for="t in todos"
+        :key="t.id"
+        :todo="t"
+        @remove="removeTodo"
       />
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import TodoInput from "./TodoInput.vue";
-import TodoItem from "./TodoItem.vue";
+import { ref } from 'vue';
+import TodoInput from './TodoInput.vue';
+import TodoItem from './TodoItem.vue';
 
-const todos = ref<string[]>([]);
-const inputFocused = ref(false); // input focus 상태
-
-function addTodo(todo: string) {
-  todos.value.push(todo);
+interface Todo {
+  id: number;
+  text: string;
+  completed: boolean;
 }
 
-function removeTodo(todo: string) {
-  todos.value = todos.value.filter(t => t !== todo);
+const todos = ref<Todo[]>([]);
+const inputFocused = ref(false);
+
+function addTodo(text: string) {
+  todos.value.push({ id: Date.now(), text, completed: false });
 }
 
-// 부모 상태 변경으로 UI 반영
-function onFocusInput() {
-  inputFocused.value = true;
+function removeTodo(id: number) {
+  todos.value = todos.value.filter(t => t.id !== id);
 }
-
-function onCancelInput() {
-  inputFocused.value = false; // 테두리 원래대로
-}
-
 </script>
