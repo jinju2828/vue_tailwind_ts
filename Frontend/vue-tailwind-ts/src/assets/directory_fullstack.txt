@@ -1,0 +1,33 @@
+vue-tailwind-ts-app/
+├─ frontend/
+│  ├─ public/
+│  │   └─ index.html
+│  ├─ src/
+│  │   ├─ assets/
+│  │   │   └─ main.css
+│  │   ├─ components/
+│  │   │   ├─ TodoInput.vue
+│  │   │   ├─ TodoItem.vue
+│  │   │   └─ TodoList.vue
+│  │   ├─ store/
+│  │   │   └─ todoStore.ts
+│  │   ├─ router/
+│  │   │   └─ index.ts
+│  │   ├─ App.vue
+│  │   └─ main.ts
+│  └─ package.json
+│
+├─ backend/
+│  ├─ src/
+│  │   ├─ app.module.ts
+│  │   ├─ main.ts
+│  │   ├─ todos/
+│  │   │   ├─ todos.controller.ts
+│  │   │   ├─ todos.service.ts
+│  │   │   └─ todos.module.ts
+│  │   └─ db/
+│  │       ├─ kysely.provider.ts
+│  │       └─ migrations.sql
+│  ├─ package.json
+│  └─ .env
+└─ README.md
