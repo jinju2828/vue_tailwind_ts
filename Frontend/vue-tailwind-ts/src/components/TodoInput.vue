@@ -12,6 +12,12 @@
     >
       Add
     </button>
+    <button
+      @click="handleCancel"
+      class="bg-gray-400 text-white px-4 py-2 rounded"
+    >
+      Cancel
+    </button>
   </div>
 </template>
 
@@ -25,6 +31,10 @@ const newTodo = ref("");
 function handleAddTodo() {
   if (newTodo.value.trim() === "") return;
   store.addTodo(newTodo.value);
+  newTodo.value = "";
+}
+
+function handleCancel() {
   newTodo.value = "";
 }
 </script>

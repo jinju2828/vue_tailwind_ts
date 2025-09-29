@@ -1,12 +1,17 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const useTodoStore = defineStore("todo", () => {
-  const todos = ref<string[]>([]);
+interface Todo {
+  text: string;
+  done: boolean;
+}
 
-  function addTodo(todo: string) {
-    if (todo.trim() !== "") {
-      todos.value.push(todo);
+export const useTodoStore = defineStore("todo", () => {
+  const todos = ref<Todo[]>([]);
+
+  function addTodo(text: string) {
+    if (text.trim() !== "") {
+      todos.value.push({ text, done: false });
     }
   }
 
@@ -14,5 +19,12 @@ export const useTodoStore = defineStore("todo", () => {
     todos.value.splice(index, 1);
   }
 
-  return { todos, addTodo, removeTodo };
+  function toggleTodo(index: number) {
+  const todo = todos.value[index];
+  if (todo) {
+    todo.done = !todo.done;
+  }
+}
+
+  return { todos, addTodo, removeTodo, toggleTodo };
 });
