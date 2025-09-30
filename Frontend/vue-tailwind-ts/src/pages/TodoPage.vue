@@ -1,62 +1,93 @@
 <template>
-  <div class="relative h-screen overflow-hidden">
-    <!-- 여러 레이어 배경 -->
-    <div
-      class="absolute inset-0 bg-gradient-to-b from-blue-400 via-purple-400 to-pink-400"
-      :style="{
-        transform: `translateY(${scrollY * 0.2}px)`
-      }"
-    ></div>
-
-    <div
-      class="absolute inset-0 opacity-60"
-      :style="{
-        background:
-          'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.4), transparent 60%)',
-        transform: `translateY(${scrollY * 0.4}px)`
-      }"
-    ></div>
-
-    <div
-      class="absolute inset-0 opacity-50"
-      :style="{
-        background:
-          'radial-gradient(circle at 80% 70%, rgba(255,255,255,0.3), transparent 70%)',
-        transform: `translateY(${scrollY * 0.6}px)`
-      }"
-    ></div>
-
-    <!-- 콘텐츠 (TodoList는 중앙 고정) -->
-    <div
-      class="relative z-10 flex items-center justify-center h-screen pointer-events-none"
-    >
-      <div
-        class="pointer-events-auto w-full max-w-md bg-white shadow-xl rounded-2xl p-6 space-y-6"
-      >
-        <h1 class="text-2xl font-bold text-center">✨ My Todo List</h1>
-        <TodoList />
-      </div>
+  <div class="todo-page">
+    <!-- 배경 -->
+    <div class="parallax-bg">
+      <div class="layer layer1"></div>
+      <div class="layer layer2"></div>
+      <div class="layer layer3"></div>
     </div>
 
-    <!-- 스크롤용 spacer (강제로 높이 줘서 스크롤 발생시킴) -->
-    <div class="h-[200vh]"></div>
+    <!-- 투두 리스트 (항상 화면 고정) -->
+    <div class="content">
+      <h1 class="text-2xl font-bold mb-4">My Todos</h1>
+      <TodoList />
+    </div>
+
+    <!-- 가짜 스크롤 영역 -->
+    <div class="scroll-space"></div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
-import TodoList from "@/components/TodoList.vue";
+<script setup>
+import { onMounted, onBeforeUnmount } from "vue"
+import TodoList from "../components/TodoList.vue"
 
-const scrollY = ref(0);
-
-function handleScroll() {
-  scrollY.value = window.scrollY;
+const handleScroll = () => {
+  const scrollY = window.scrollY
+  document.querySelector(".layer1").style.transform = `translateY(${scrollY * 0.2}px)`
+  document.querySelector(".layer2").style.transform = `translateY(${scrollY * 0.5}px)`
+  document.querySelector(".layer3").style.transform = `translateY(${scrollY * 0.8}px)`
 }
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-});
-onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
-});
+  window.addEventListener("scroll", handleScroll)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", handleScroll)
+})
 </script>
+
+<style scoped>
+::-webkit-scrollbar {
+  display: none;
+}
+html {
+  scrollbar-width: none;
+}
+body {
+  -ms-overflow-style: none;
+}
+
+.todo-page {
+  position: relative;
+  overflow-x: hidden;
+}
+
+.parallax-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+.layer {
+  position: absolute;
+  width: 100%;
+  height: 200%;
+  will-change: transform;
+  opacity: 0.6;
+}
+
+.layer1 {
+  background: linear-gradient(120deg, #6dd5ed, #2193b0);
+}
+.layer2 {
+  background: linear-gradient(120deg, #ffecd2, #fcb69f);
+}
+.layer3 {
+  background: linear-gradient(120deg, #c9ffbf, #ffafbd);
+}
+
+.content {
+  position: fixed; /* ✅ 화면 중앙 고정 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  text-align: center;
+}
+
+.scroll-space {
+  height: 200vh; /* ✅ 스크롤 공간만 만들어줌 */
+}
+</style>
