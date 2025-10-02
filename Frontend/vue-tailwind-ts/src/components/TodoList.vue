@@ -91,8 +91,23 @@
 
     <!-- Empty state -->
     <div v-if="!filteredTodos.length" class="text-center text-gray-400 py-6">
-      <p class="mb-2">😴 There is no ToDo</p>
-      <p class="text-sm">Add any ToDo you want to finish today!</p>
+      <!-- All -->
+      <template v-if="filter === 'all'">
+        <p class="mb-2">😴 There is no ToDo</p>
+        <p class="text-sm">Add any ToDo you want to finish today!</p>
+      </template>
+
+      <!-- Active -->
+      <template v-else-if="filter === 'active'">
+        <p class="mb-2">✨ No active tasks</p>
+        <p class="text-sm">You're all caught up, take a break! 🛋️</p>
+      </template>
+
+      <!-- Completed -->
+      <template v-else-if="filter === 'completed'">
+        <p class="mb-2">🎉 No completed items yet</p>
+        <p class="text-sm">Check off some ToDos to see them here!</p>
+      </template>
     </div>
   </div>
 </template>
