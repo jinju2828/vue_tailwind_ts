@@ -21,6 +21,8 @@ vue-tailwind-ts-app/
 │  ├─ src/
 │  │   ├─ app.module.ts
 │  │   ├─ main.ts
+│  │   ├─ routes/
+│  │   │   ├─ todos.ts
 │  │   ├─ todos/
 │  │   │   ├─ todos.controller.ts
 │  │   │   ├─ todos.service.ts
