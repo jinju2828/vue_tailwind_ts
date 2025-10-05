@@ -6,6 +6,8 @@
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true,    // ✅ 이거 꼭 켜야 함!
+    "emitDecoratorMetadata": true,     // ✅ NestJS 필수
   }
 }

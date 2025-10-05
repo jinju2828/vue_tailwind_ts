@@ -1,12 +1,11 @@
-import { Kysely, PostgresDialect } from 'kysely';
+import { Kysely, PostgresDialect, Generated } from 'kysely';
 import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
-
 dotenv.config();
 
 export interface Database {
   todos: {
-    id: number;
+    id: Generated<number>;  // ✅ 자동 생성 필드임을 명시
     text: string;
     done: boolean;
     order: number;
