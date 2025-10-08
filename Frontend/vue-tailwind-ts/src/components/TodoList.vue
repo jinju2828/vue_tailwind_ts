@@ -55,11 +55,9 @@
       <template #item="{ element: todo }">
         <li class="flex justify-between items-center bg-gray-50 rounded-lg px-3 py-2 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
           <label class="flex items-center gap-3 flex-1 cursor-pointer">
-            <!-- 햄버거 메뉴 아이콘 (드래그 핸들) -->
             <span class="handle cursor-grab select-none text-gray-400">☰</span>
 
-            <!-- 체크박스 -->
-            <input type="checkbox" v-model="todo.done" class="peer hidden" />
+            <input type="checkbox" :checked="todo.done" @change="toggleTodo(todo.id)" class="peer hidden" />
             <span
               class="w-5 h-5 border-2 rounded-full flex items-center justify-center
                      peer-checked:bg-blue-500 peer-checked:border-blue-500 transition-colors duration-300"
@@ -81,29 +79,22 @@
             </span>
           </label>
 
-          <!-- 삭제 버튼 -->
-          <button @click="store.removeTodo(todo.id)" class="ml-3 text-red-500 hover:scale-110 transition-transform">
+          <button @click="removeTodo(todo.id)" class="ml-3 text-red-500 hover:scale-110 transition-transform">
             🗑
           </button>
         </li>
       </template>
     </draggable>
 
-    <!-- Empty state -->
     <div v-if="!filteredTodos.length" class="text-center text-gray-400 py-6">
-      <!-- All -->
       <template v-if="filter === 'all'">
         <p class="mb-2">😴 There is no ToDo</p>
         <p class="text-sm">Add any ToDo you want to finish today!</p>
       </template>
-
-      <!-- Active -->
       <template v-else-if="filter === 'active'">
         <p class="mb-2">✨ No active tasks</p>
         <p class="text-sm">You're all caught up, take a break! 🛋️</p>
       </template>
-
-      <!-- Completed -->
       <template v-else-if="filter === 'completed'">
         <p class="mb-2">🎉 No completed items yet</p>
         <p class="text-sm">Check off some ToDos to see them here!</p>
@@ -113,54 +104,65 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
-import { useTodoStore } from "@/stores/todoStore";
-import draggable from "vuedraggable";
+import { ref, computed, onMounted } from 'vue';
+import { useTodoStore } from '@/stores/todoStore';
+import draggable from 'vuedraggable';
 
 const store = useTodoStore();
-const newTodo = ref("");
-const filter = ref<"all"|"active"|"completed">("all");
+const newTodo = ref('');
+const filter = ref<'all'|'active'|'completed'>('all');
+
+onMounted(() => {
+  store.fetchTodos(); // 초기 데이터 불러오기
+});
 
 function addTodo() {
   if (!newTodo.value.trim()) return;
   store.addTodo(newTodo.value);
-  newTodo.value = "";
+  newTodo.value = '';
 }
-function setFilter(type: "all"|"active"|"completed") {
+
+function removeTodo(id: number) {
+  store.removeTodo(id);
+}
+
+function toggleTodo(id: number) {
+  store.toggleTodo(id);
+}
+
+function setFilter(type: 'all'|'active'|'completed') {
   filter.value = type;
 }
 
 // 필터링
 const filteredTodos = computed({
   get() {
-    if (filter.value === "active") return store.activeTodos;
-    if (filter.value === "completed") return store.completedTodos;
+    if (filter.value === 'active') return store.activeTodos;
+    if (filter.value === 'completed') return store.completedTodos;
     return store.allTodos;
   },
   set(newList) {
-    // 드래그 후 순서 저장
-    if (filter.value === "all") store.setTodos(newList);
+    if (filter.value === 'all') store.setTodos(newList);
     else {
-      // active/completed 탭에서 재정렬 시 store.todos 반영
       const otherTodos = store.todos.filter(t => !newList.includes(t));
-      store.setTodos(filter.value === "active" 
-        ? [...newList, ...otherTodos.filter(t=>t.done)]
-        : [...otherTodos.filter(t=>!t.done), ...newList]);
+      store.setTodos(
+        filter.value === 'active'
+          ? [...newList, ...otherTodos.filter(t => t.done)]
+          : [...otherTodos.filter(t => !t.done), ...newList]
+      );
     }
   }
 });
 
-// 드래그 후 반영
 function onDragEnd() {
-  // v-model setter에서 이미 store.todos 반영
+  // v-model setter에서 store.setTodos 호출됨
 }
 
-// underline 애니메이션용
-const tabWidth = "33.33%";
+const tabWidth = '33.33%';
 const tabTranslate = computed(() => {
-  if (filter.value === "all") return "0%";
-  if (filter.value === "active") return "100%";
-  return "200%";
+  if (filter.value === 'all') return '0%';
+  if (filter.value === 'active') return '100%';
+  return '200%';
 });
 </script>
 
